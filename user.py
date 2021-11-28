@@ -242,6 +242,14 @@ class User:
         features['blank'] = 0.0
         if state[next_y][next_x] == BLANK:
             features['blank'] += 1
+        if next_y > 0 and state[next_y - 1][next_x] == BLANK:
+            features['blank'] += 1.0
+        if next_x > 0 and state[next_y][next_x - 1] == BLANK:
+            features['blank'] += 1.0
+        if next_x < len(state[0]) - 1 and state[next_y][next_x + 1] == BLANK:
+            features['blank'] += 1.0
+        if next_y < len(state) - 1 and state[next_y + 1][next_x] == BLANK:
+            features['blank'] += 1.0
         features['next-power'] = 0.0
         if state[next_y][next_x] == POWER:
             features['next-power'] += 1
