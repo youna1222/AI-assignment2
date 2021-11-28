@@ -11,7 +11,7 @@ class User:
         self.discount = 0.8
         self.lr = 0.003
 
-        self.weights = {'bias': 0.0, 'next-ghost': 0.0, 'next-eat': 0.0, 'closest-item': 0.0}
+        self.weights = {'bias': 0.0, 'next-ghost': 0.0, 'next-eat': 0.0, 'closest-item': 0.0, 'next-power': 0.0}
 
     def next_pos(self, state, test=False):
         if self.move == 'v1':
@@ -34,7 +34,7 @@ class User:
         return random.choice(cand_pos)
 
     def get_legal_actions(self, state):
-        y, x = 0, 0
+        y, x = self.y, self.x
         for i in range(len(state)):
             for j in range(len(state[0])):
                 if state[i][j] in [USER, PUSER]:
@@ -133,7 +133,7 @@ class User:
         return 0.0
 
     def get_features(self, state, action):
-        y, x = 0, 0
+        y, x = self.y, self.x
         for i in range(len(state)):
             for j in range(len(state[0])):
                 if state[i][j] in [USER, PUSER]:
@@ -160,8 +160,10 @@ class User:
         if next_y < len(state) - 1 and state[next_y + 1][next_x] == GHOST:
             features['next-ghost'] += 1.0
         features['next-eat'] = 0.0
-        if state[next_y][next_x] in [ITEM, POWER]:
+        if state[next_y][next_x] == ITEM:
             features['next-eat'] = 1.0
+        if state[next_y][next_x] == POWER:
+            features['next-power'] = 10
         features['closest-item'] = self.get_closest_item(state, next_y, next_x)
 
         return features
