@@ -50,7 +50,7 @@ class User:
             actions.append(3)
         return actions
 
-    def possible_actions_count(state, y, x):
+    def possible_actions_count(self, state, y, x):
         count = 0
         if state[y - 1][x] != WALL:
             count += 1
@@ -162,7 +162,8 @@ class User:
         features = {'bias': 1.0}
         features['next-ghost'] = 0.0
         features['next-power-close-ghost'] = 0.0
-        count = self.possible_actions_count(state, next_y, next_x)
+        count = self.possible_actions_count(self, state, next_y, next_x)
+
         if state[next_y][next_x] == GHOST:
             features['next-ghost'] += 1.0
             if count < 2:
