@@ -201,18 +201,25 @@ class User:
                 features['trap-while-ghost'] += 1.0
 
         features['next-eat'] = 0.0
-        if features['next-ghost'] == 0:
-            self.calculate_feature(state, next_y, next_x, features['next-eat'], ITEM)
+        if state[next_y][next_x] == ITEM:
+            features['next-eat'] += 1.0
+        #self.calculate_feature(state, next_y, next_x, features['next-eat'], ITEM)
 
         features['blank'] = 0.0
-        self.calculate_feature(state, next_y, next_x, features['blank'], BLANK)
+        if state[next_y][next_x] == BLANK:
+            features['blank'] += 1.0
+        #self.calculate_feature(state, next_y, next_x, features['blank'], BLANK)
 
         features['next-power'] = 0.0
-        self.calculate_feature(state, next_y, next_x, features['next-power'], POWER)
+        if state[next_y][next_x] == POWER:
+            features['next-power'] += 1.0
+        #self.calculate_feature(state, next_y, next_x, features['next-power'], POWER)
         features['closest-item'] = self.get_closest_item(state, next_y, next_x)
 
         features['visited'] = 0.0
-        self.calculate_feature(self.visited, next_y, next_x, features['visited'], True)
+        if self.visited[next_y][next_x] == True:
+            features['visited'] += 1.0
+        #self.calculate_feature(self.visited, next_y, next_x, features['visited'], True)
 
         return features
 
