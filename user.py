@@ -150,13 +150,13 @@ class User:
 
     def calculate_feature(self, state, next_y, next_x, feature, type):
         if state[next_y][next_x] == type:
-            feature += 2.0
+            feature += 1.0
         if next_y > 0 and state[next_y - 1][next_x] == type:
             feature += 1.0
         if next_x > 0 and state[next_y][next_x - 1] == type:
-            feature += 1
+            feature += 1.0
         if next_x < len(state[0]) - 1 and state[next_y][next_x + 1] == type:
-            feature += 1
+            feature += 1.0
         if next_y < len(state) - 1 and state[next_y + 1][next_x] == type:
             feature += 1.0
         return feature
