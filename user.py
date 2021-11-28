@@ -279,6 +279,6 @@ class User:
             next_pos = (self.y, self.x + 1)
         else:
             next_pos = (self.y + 1, self.x)
-        self.visited[next_pos[0]][next_pos[1]] = True
-        print(self.visited)
+        #self.visited[next_pos[0]][next_pos[1]] = True
+        #print(self.visited)
         return next_pos
