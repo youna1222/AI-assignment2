@@ -164,13 +164,13 @@ class User:
         features['next-power-close-ghost'] = 0.0
 
         count = 0
-        if state[next_y - 1][next_x] != WALL:
+        if state[next_y - 1][next_x] != WALL and state[next_y - 1][next_x] != GHOST:
             count += 1
-        if state[next_y][next_x - 1] != WALL:
+        if state[next_y][next_x - 1] != WALL and state[next_y - 1][next_x] != GHOST:
             count += 1
-        if state[next_y][next_x + 1] != WALL:
+        if state[next_y][next_x + 1] != WALL and state[next_y - 1][next_x] != GHOST:
             count += 1
-        if state[next_y + 1][next_x] != WALL:
+        if state[next_y + 1][next_x] != WALL and state[next_y - 1][next_x] != GHOST:
             count += 1
 
         if state[next_y][next_x] == GHOST:
