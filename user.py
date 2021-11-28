@@ -162,7 +162,9 @@ class User:
         features = {'bias': 1.0}
         features['next-ghost'] = 0.0
         features['next-power-close-ghost'] = 0.0
-        count = self.possible_actions_count(self, state, next_y, next_x)
+        yy = next_y
+        xx = next_x
+        count = self.possible_actions_count(self, state, yy, xx)
 
         if state[next_y][next_x] == GHOST:
             features['next-ghost'] += 1.0
