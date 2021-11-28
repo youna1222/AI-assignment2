@@ -162,6 +162,7 @@ class User:
         features = {'bias': 1.0}
         features['next-ghost'] = 0.0
         features['next-power-close-ghost'] = 0.0
+        features['trap-while-ghost'] = 0.0
 
         count = 0
         if state[next_y - 1][next_x] != WALL and state[next_y - 1][next_x] != GHOST:
