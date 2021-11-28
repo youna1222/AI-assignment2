@@ -196,7 +196,8 @@ class User:
         if features['next-ghost'] > 1:
             features['too-many-next-ghost'] += 1.0
         if features['next-ghost'] >= 1:
-            features['next-power-close-ghost'] += 1.0
+            if state[next_y][next_x] == POWER:
+                features['next-power-close-ghost'] += 1.0
             #self.calculate_feature(state, next_y, next_x, features['next-power-close-ghost'], POWER)
             if count < 2:
                 features['trap-while-ghost'] += 1.0
