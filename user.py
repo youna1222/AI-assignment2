@@ -165,6 +165,7 @@ class User:
         features['trap-while-ghost'] = 0.0
 
         count = 0
+        danger = False
         if state[next_y - 1][next_x] != WALL and state[next_y - 1][next_x] != GHOST:
             count += 1
         if state[next_y][next_x - 1] != WALL and state[next_y - 1][next_x] != GHOST:
@@ -177,67 +178,66 @@ class User:
         if state[next_y][next_x] == GHOST:
             features['next-ghost'] += 1.0
             features['next-power-close-ghost'] += 1.0
-            if count < 2:
-                features['trap-while-ghost'] += 1.0
+            danger = True
         if next_y > 0 and state[next_y - 1][next_x] == GHOST:
             features['next-ghost'] += 1.0
             features['next-power-close-ghost'] += 1.0
-            if count < 2:
-                features['trap-while-ghost'] += 1.0
+            danger = True
         if next_x > 0 and state[next_y][next_x - 1] == GHOST:
             features['next-ghost'] += 1.0
             features['next-power-close-ghost'] += 1.0
-            if count < 2:
-                features['trap-while-ghost'] += 1.0
+            danger = True
         if next_x < len(state[0]) - 1 and state[next_y][next_x + 1] == GHOST:
             features['next-ghost'] += 1.0
             features['next-power-close-ghost'] += 1.0
-            if count < 2:
-                features['trap-while-ghost'] += 1.0
+            danger = True
         if next_y < len(state) - 1 and state[next_y + 1][next_x] == GHOST:
             features['next-ghost'] += 1.0
             features['next-power-close-ghost'] += 1.0
-            if count < 2:
-                features['trap-while-ghost'] += 1.0
+            danger = True
         features['too-many-next-ghost'] = 0.0
         if features['next-ghost'] > 1:
             features['too-many-next-ghost'] += 1.0
+        if danger:
+            if count < 2:
+                features['trap-while-ghost'] += 1.0
         features['next-eat'] = 0.0
         features['next-next-eat'] = 0.0
-        if state[next_y][next_x] == ITEM:
-            features['next-eat'] += 1.0
-        if next_y > 0 and state[next_y - 1][next_x] == ITEM:
-            features['next-eat'] += 1.0
-            if next_y > 1 and state[next_y - 2][next_x] == ITEM:
-                features['next-next-eat'] += 1.0
-            if next_x > 0 and state[next_y-1][next_x - 1] == ITEM:
-                features['next-next-eat'] += 1.0
-            if next_x < len(state[0]) - 1 and state[next_y-1][next_x + 1] == ITEM:
-                features['next-next-eat'] += 1.0
-        if next_x > 0 and state[next_y][next_x - 1] == ITEM:
-            features['next-eat'] += 1.0
-            if next_y > 0 and state[next_y - 1][next_x-1] == ITEM:
-                features['next-next-eat'] += 1.0
-            if next_x > 1 and state[next_y][next_x - 2] == ITEM:
-                features['next-next-eat'] += 1.0
-            if next_y < len(state) - 1 and state[next_y + 1][next_x-1] == ITEM:
-                features['next-next-eat'] += 1.0
-        if next_x < len(state[0]) - 1 and state[next_y][next_x + 1] == ITEM:
-            features['next-eat'] += 1.0
-            if next_y > 0 and state[next_y - 1][next_x+1] == ITEM:
-                features['next-next-eat'] += 1.0
-            if next_x < len(state[0]) - 2 and state[next_y][next_x + 2] == ITEM:
-                features['next-next-eat'] += 1.0
-            if next_y < len(state) - 1 and state[next_y + 1][next_x+1] == ITEM:
-                features['next-next-eat'] += 1.0
-        if next_y < len(state) - 1 and state[next_y + 1][next_x] == ITEM:
-            features['next-eat'] += 1.0
-            if next_x > 0 and state[next_y+1][next_x - 1] == ITEM:
+        if not danger:
+            if state[next_y][next_x] == ITEM:
                 features['next-eat'] += 1.0
-            if next_x < len(state[0]) - 1 and state[next_y+1][next_x + 1] == ITEM:
+            if next_y > 0 and state[next_y - 1][next_x] == ITEM:
                 features['next-eat'] += 1.0
-            if next_y < len(state) - 2 and state[next_y + 2][next_x] == ITEM:
+                if next_y > 1 and state[next_y - 2][next_x] == ITEM:
+                    features['next-next-eat'] += 1.0
+                if next_x > 0 and state[next_y-1][next_x - 1] == ITEM:
+                    features['next-next-eat'] += 1.0
+                if next_x < len(state[0]) - 1 and state[next_y-1][next_x + 1] == ITEM:
+                    features['next-next-eat'] += 1.0
+            if next_x > 0 and state[next_y][next_x - 1] == ITEM:
                 features['next-eat'] += 1.0
+                if next_y > 0 and state[next_y - 1][next_x-1] == ITEM:
+                    features['next-next-eat'] += 1.0
+                if next_x > 1 and state[next_y][next_x - 2] == ITEM:
+                    features['next-next-eat'] += 1.0
+                if next_y < len(state) - 1 and state[next_y + 1][next_x-1] == ITEM:
+                    features['next-next-eat'] += 1.0
+            if next_x < len(state[0]) - 1 and state[next_y][next_x + 1] == ITEM:
+                features['next-eat'] += 1.0
+                if next_y > 0 and state[next_y - 1][next_x+1] == ITEM:
+                    features['next-next-eat'] += 1.0
+                if next_x < len(state[0]) - 2 and state[next_y][next_x + 2] == ITEM:
+                    features['next-next-eat'] += 1.0
+                if next_y < len(state) - 1 and state[next_y + 1][next_x+1] == ITEM:
+                    features['next-next-eat'] += 1.0
+            if next_y < len(state) - 1 and state[next_y + 1][next_x] == ITEM:
+                features['next-eat'] += 1.0
+                if next_x > 0 and state[next_y+1][next_x - 1] == ITEM:
+                    features['next-eat'] += 1.0
+                if next_x < len(state[0]) - 1 and state[next_y+1][next_x + 1] == ITEM:
+                    features['next-eat'] += 1.0
+                if next_y < len(state) - 2 and state[next_y + 2][next_x] == ITEM:
+                    features['next-eat'] += 1.0
 
         features['next-power'] = 0.0
         if state[next_y][next_x] == POWER:
