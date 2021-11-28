@@ -11,7 +11,7 @@ class User:
         self.discount = 0.8
         self.lr = 0.003
 
-        self.weights = {'bias': 0.0, 'next-ghost': 0.0, 'next-eat': 0.0, 'closest-item': 0.0, 'next-power': 0.0, 'next-power-close-ghost': 0.0, 'too-many-next-ghost': 0.0, 'next-next-eat': 0.0, 'trap-while-ghost': 0.0, 'blank': 0.0, 'visited': 0.0}
+        self.weights = {'bias': 0.0, 'next-ghost': 0.0, 'next-next-ghost': 0.0, 'next-eat': 0.0, 'next-next-eat': 0.0, 'closest-item': 0.0, 'next-power': 0.0, 'next-next-power': 0.0, 'next-power-close-ghost': 0.0, 'too-many-next-ghost': 0.0, 'trap-while-ghost': 0.0, 'next-blank': 0.0, 'next-next-blank': 0.0, 'visited': 0.0}
 
         self.visited = [[False]*21 for i in range(21)]
 
@@ -148,18 +148,18 @@ class User:
 
 
 
-    def calculate_feature(self, state, next_y, next_x, feature, type):
+    def calculate_feature(self, state, next_y, next_x, feature, next_feature, type):
         if state[next_y][next_x] == type:
             feature += 1.0
         if next_y > 0 and state[next_y - 1][next_x] == type:
-            feature += 1.0
+            next_feature += 1.0
         if next_x > 0 and state[next_y][next_x - 1] == type:
-            feature += 1.0
+            next_feature += 1.0
         if next_x < len(state[0]) - 1 and state[next_y][next_x + 1] == type:
-            feature += 1.0
+            next_feature += 1.0
         if next_y < len(state) - 1 and state[next_y + 1][next_x] == type:
-            feature += 1.0
-        return feature
+            next_feature += 1.0
+        return feature+next_feature
 
     def get_features(self, state, action):
         y, x = self.y, self.x
@@ -178,6 +178,7 @@ class User:
 
         features = {'bias': 1.0}
         features['next-ghost'] = 0.0
+        features['next-next-ghost'] = 0.0
         features['next-power-close-ghost'] = 0.0
         features['trap-while-ghost'] = 0.0
 
@@ -191,30 +192,32 @@ class User:
         if state[next_y + 1][next_x] != WALL and state[next_y - 1][next_x] != GHOST:
             count += 1
 
-        features['next-ghost'] = self.calculate_feature(state, next_y, next_x, features['next-ghost'], GHOST)
+        features['next-ghost'] = self.calculate_feature(state, next_y, next_x, features['next-ghost'], features['next-next-ghost'], GHOST)
         features['too-many-next-ghost'] = 0.0
         if features['next-ghost'] > 1:
             features['too-many-next-ghost'] += 1.0
         if features['next-ghost'] >= 1:
             features['next-power-close-ghost'] += 1.0
-            #self.calculate_feature(state, next_y, next_x, features['next-power-close-ghost'], POWER)
             if count < 2:
                 features['trap-while-ghost'] += 1.0
 
         features['next-eat'] = 0.0
-        if state[next_y][next_x] == ITEM:
-            features['next-eat'] += 1.0
-        #self.calculate_feature(state, next_y, next_x, features['next-eat'], ITEM)
+        features['next-next-eat'] = 0.0
+        #if state[next_y][next_x] == ITEM:
+        #    features['next-eat'] += 1.0
+        self.calculate_feature(state, next_y, next_x, features['next-eat'], features['next-next-eat'], ITEM)
 
-        features['blank'] = 0.0
-        if state[next_y][next_x] == BLANK:
-            features['blank'] += 1.0
-        #self.calculate_feature(state, next_y, next_x, features['blank'], BLANK)
+        features['next-blank'] = 0.0
+        features['next-next-blank'] = 0.0
+        #if state[next_y][next_x] == BLANK:
+        #    features['blank'] += 1.0
+        self.calculate_feature(state, next_y, next_x, features['next-blank'], features['next-next-blank'], BLANK)
 
         features['next-power'] = 0.0
-        if state[next_y][next_x] == POWER:
-            features['next-power'] += 1.0
-        #self.calculate_feature(state, next_y, next_x, features['next-power'], POWER)
+        features['next-next-power'] = 0.0
+        #if state[next_y][next_x] == POWER:
+        #    features['next-power'] += 1.0
+        self.calculate_feature(state, next_y, next_x, features['next-power'], features['next-next-power'], POWER)
         features['closest-item'] = self.get_closest_item(state, next_y, next_x)
 
         features['visited'] = 0.0
