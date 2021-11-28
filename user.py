@@ -280,4 +280,5 @@ class User:
         else:
             next_pos = (self.y + 1, self.x)
         self.visited[next_pos[0]][next_pos[1]] = True
+        print(self.visited)
         return next_pos
