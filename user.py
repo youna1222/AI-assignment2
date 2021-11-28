@@ -11,7 +11,7 @@ class User:
         self.discount = 0.8
         self.lr = 0.003
 
-        self.weights = {'bias': 0.0, 'next-ghost': 0.0, 'next-eat': 0.0, 'closest-item': 0.0, 'next-power': 0.0, 'next-power-close-ghost': 0.0, 'too-many-next-ghost': 0.0, 'next-next-eat': 0.0, 'trap-while-ghost': 0.0}
+        self.weights = {'bias': 0.0, 'next-ghost': 0.0, 'next-eat': 0.0, 'closest-item': 0.0, 'next-power': 0.0, 'next-power-close-ghost': 0.0, 'too-many-next-ghost': 0.0, 'next-next-eat': 0.0, 'trap-while-ghost': 0.0, 'blank': 0.0}
 
     def next_pos(self, state, test=False):
         if self.move == 'v1':
@@ -239,9 +239,12 @@ class User:
                 if next_y < len(state) - 2 and state[next_y + 2][next_x] == ITEM:
                     features['next-eat'] += 1.0
 
+        features['blank'] = 0.0
+        if state[next_y][next_x] == BLANK:
+            features['blank'] += 1
         features['next-power'] = 0.0
         if state[next_y][next_x] == POWER:
-            features['next-power'] = 1
+            features['next-power'] += 1
         features['closest-item'] = self.get_closest_item(state, next_y, next_x)
 
         return features
