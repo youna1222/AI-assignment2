@@ -161,7 +161,16 @@ class User:
             features['next-ghost'] += 1.0
         features['next-eat'] = 0.0
         if state[next_y][next_x] == ITEM:
-            features['next-eat'] = 1.0
+            features['next-eat'] += 1.0
+        if next_y > 0 and state[next_y - 1][next_x] == ITEM:
+            features['next-eat'] += 1.0
+        if next_x > 0 and state[next_y][next_x - 1] == ITEM:
+            features['next-eat'] += 1.0
+        if next_x < len(state[0]) - 1 and state[next_y][next_x + 1] == ITEM:
+            features['next-eat'] += 1.0
+        if next_y < len(state) - 1 and state[next_y + 1][next_x] == ITEM:
+            features['next-eat'] += 1.0
+        features['next-power'] = 0.0
         if state[next_y][next_x] == POWER:
             features['next-power'] = 10
         features['closest-item'] = self.get_closest_item(state, next_y, next_x)
