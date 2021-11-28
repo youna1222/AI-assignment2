@@ -211,8 +211,8 @@ class User:
         self.calculate_feature(state, next_y, next_x, features['next-power'], POWER)
         features['closest-item'] = self.get_closest_item(state, next_y, next_x)
 
-        #features['visited'] = 0.0
-        #self.calculate_feature(self.visited, next_y, next_x, features['visited'], True)
+        features['visited'] = 0.0
+        self.calculate_feature(self.visited, next_y, next_x, features['visited'], True)
 
         return features
 
