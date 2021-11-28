@@ -11,7 +11,7 @@ class User:
         self.discount = 0.8
         self.lr = 0.003
 
-        self.weights = {'bias': 0.0, 'next-ghost': 0.0, 'next-eat': 0.0, 'closest-item': 0.0, 'next-power': 0.0, 'too-many-next-ghost': 0.0}
+        self.weights = {'bias': 0.0, 'next-ghost': 0.0, 'next-eat': 0.0, 'closest-item': 0.0, 'next-power': 0.0, 'too-many-next-ghost': 0.0, 'next-next-eat': 0.0}
 
     def next_pos(self, state, test=False):
         if self.move == 'v1':
@@ -163,16 +163,42 @@ class User:
         if features['next-ghost'] > 1:
             features['too-many-next-ghost'] += 1.0
         features['next-eat'] = 0.0
+        features['next-next-eat'] = 0.0
         if state[next_y][next_x] == ITEM:
             features['next-eat'] += 1.0
         if next_y > 0 and state[next_y - 1][next_x] == ITEM:
             features['next-eat'] += 1.0
+            if next_y > 1 and state[next_y - 2][next_x] == ITEM:
+                features['next-next-eat'] += 1.0
+            if next_x > 0 and state[next_y-1][next_x - 1] == ITEM:
+                features['next-next-eat'] += 1.0
+            if next_x < len(state[0]) - 1 and state[next_y-1][next_x + 1] == ITEM:
+                features['next-next-eat'] += 1.0
         if next_x > 0 and state[next_y][next_x - 1] == ITEM:
             features['next-eat'] += 1.0
+            if next_y > 0 and state[next_y - 1][next_x-1] == ITEM:
+                features['next-next-eat'] += 1.0
+            if next_x > 1 and state[next_y][next_x - 2] == ITEM:
+                features['next-next-eat'] += 1.0
+            if next_y < len(state) - 1 and state[next_y + 1][next_x-1] == ITEM:
+                features['next-next-eat'] += 1.0
         if next_x < len(state[0]) - 1 and state[next_y][next_x + 1] == ITEM:
             features['next-eat'] += 1.0
+            if next_y > 0 and state[next_y - 1][next_x+1] == ITEM:
+                features['next-next-eat'] += 1.0
+            if next_x < len(state[0]) - 2 and state[next_y][next_x + 2] == ITEM:
+                features['next-next-eat'] += 1.0
+            if next_y < len(state) - 1 and state[next_y + 1][next_x+1] == ITEM:
+                features['next-next-eat'] += 1.0
         if next_y < len(state) - 1 and state[next_y + 1][next_x] == ITEM:
             features['next-eat'] += 1.0
+            if next_x > 0 and state[next_y+1][next_x - 1] == ITEM:
+                features['next-eat'] += 1.0
+            if next_x < len(state[0]) - 1 and state[next_y+1][next_x + 1] == ITEM:
+                features['next-eat'] += 1.0
+            if next_y < len(state) - 2 and state[next_y + 2][next_x] == ITEM:
+                features['next-eat'] += 1.0
+
         features['next-power'] = 0.0
         if state[next_y][next_x] == POWER:
             features['next-power'] = 1
