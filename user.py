@@ -176,6 +176,7 @@ class User:
 
         if state[next_y][next_x] == GHOST:
             features['next-ghost'] += 1.0
+            features['next-power-close-ghost'] += 1.0
             if count < 2:
                 features['trap-while-ghost'] += 1.0
         if next_y > 0 and state[next_y - 1][next_x] == GHOST:
