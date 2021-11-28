@@ -175,7 +175,7 @@ class User:
             features['next-eat'] += 1.0
         features['next-power'] = 0.0
         if state[next_y][next_x] == POWER:
-            features['next-power'] = 10
+            features['next-power'] = 1
         features['closest-item'] = self.get_closest_item(state, next_y, next_x)
 
         return features
