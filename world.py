@@ -242,7 +242,7 @@ class World:
             return True
         if self.total_time > self.max_y * self.max_x * 10:
             self.total_score += SCORE_ALIVE
-            self.user.update(before_board, action, self.board, SCORE_ALIVE)
+            self.user.update(before_board, action, self.board, SCORE_DEAD)
             return True
         self.user.update(before_board, action, self.board, next_score - score)
         if self.powered > 0:
