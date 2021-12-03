@@ -152,16 +152,16 @@ class User:
         if state[next_y][next_x] == type:
             feature += 1.0
         if next_y > 0 and state[next_y - 1][next_x] == type:
-            self.calculate_ghost_threat(self, state, next_y-1, next_x, ghost_threat)
+            self.calculate_ghost_threat(state, next_y-1, next_x, ghost_threat)
             feature += 1.0
         if next_x > 0 and state[next_y][next_x - 1] == type:
-            self.calculate_ghost_threat(self, state, next_y, next_x-1, ghost_threat)
+            self.calculate_ghost_threat(state, next_y, next_x-1, ghost_threat)
             feature += 1.0
         if next_x < len(state[0]) - 1 and state[next_y][next_x + 1] == type:
-            self.calculate_ghost_threat(self, state, next_y, next_x+1, ghost_threat)
+            self.calculate_ghost_threat(state, next_y, next_x+1, ghost_threat)
             feature += 1.0
         if next_y < len(state) - 1 and state[next_y + 1][next_x] == type:
-            self.calculate_ghost_threat(self, state, next_y+1, next_x, ghost_threat)
+            self.calculate_ghost_threat(state, next_y+1, next_x, ghost_threat)
             feature += 1.0
         return feature, ghost_threat
 
