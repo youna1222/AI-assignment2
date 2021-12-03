@@ -11,9 +11,10 @@ class User:
         self.discount = 0.8
         self.lr = 0.003
 
-        self.weights = {'bias': 0.0, 'next-ghost': 0.0, 'next-eat': 0.0, 'closest-item': 0.0, 'next-power': 0.0, 'next-power-close-ghost': 0.0, 'too-many-next-ghost': 0.0, 'next-next-eat': 0.0, 'trap-while-ghost': 0.0, 'blank': 0.0, 'recent-visit': 0.0, 'checkmate': 0.0}
+        self.weights = {'bias': 0.0, 'next-ghost': 0.0, 'next-eat': 0.0, 'closest-item': 0.0, 'next-power': 0.0, 'next-power-close-ghost': 0.0, 'too-many-next-ghost': 0.0, 'next-next-eat': 0.0, 'trap-while-ghost': 0.0, 'blank': 0.0, '5-recent-visit': 0.0, '10-recent-visit': 0.0, 'checkmate': 0.0}
 
-        self.recent_visit = [(0, 0), (0, 0), (0, 0), (0, 0), (0, 0), (0, 0), (0, 0), (0, 0), (0, 0), (0, 0)]
+        self.recent_visit_10 = [(0, 0), (0, 0), (0, 0), (0, 0), (0, 0), (0, 0), (0, 0), (0, 0), (0, 0), (0, 0)]
+        self.recent_visit_5 = [(0, 0), (0, 0), (0, 0), (0, 0), (0, 0)]
 
     def next_pos(self, state, test=False):
         if self.move == 'v1':
@@ -242,10 +243,14 @@ class User:
         #self.calculate_feature(state, next_y, next_x, features['next-power'], POWER)
         features['closest-item'] = self.get_closest_item(state, next_y, next_x)
 
-        features['recent-visit'] = 0.0
-        for r in self.recent_visit:
+        features['10-recent-visit'] = 0.0
+        features['5-recent-visit'] = 0.0
+        for r in self.recent_visit_10:
             if r == (next_y, next_x):
                 features['recent-visit'] += 1.0
+        for r in self.recent_visit_5:
+            if r == (next_y, next_x):
+                features['5-recent-visit'] += 1.0
 
         #features['visited'] = 0.0
         #if self.visited[next_y][next_x] == True:
@@ -309,7 +314,9 @@ class User:
             next_pos = (self.y, self.x + 1)
         else:
             next_pos = (self.y + 1, self.x)
-        self.recent_visit.pop()
-        self.recent_visit.append(next_pos)
+        self.recent_visit_10.pop()
+        self.recent_visit_10.append(next_pos)
+        self.recent_visit_5.pop()
+        self.recent_visit_5.append(next_pos)
         #print(self.visited)
         return next_pos
