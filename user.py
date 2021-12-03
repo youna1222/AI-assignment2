@@ -247,7 +247,7 @@ class User:
         features['5-recent-visit'] = 0.0
         for r in self.recent_visit_10:
             if r == (next_y, next_x):
-                features['recent-visit'] += 1.0
+                features['10-recent-visit'] += 1.0
         for r in self.recent_visit_5:
             if r == (next_y, next_x):
                 features['5-recent-visit'] += 1.0
