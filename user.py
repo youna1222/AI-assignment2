@@ -11,7 +11,7 @@ class User:
         self.discount = 0.8
         self.lr = 0.003
 
-        self.weights = {'bias': 0.0, 'next-ghost': 0.0, 'next-eat': 0.0, 'closest-item': 0.0, 'next-power': 0.0, 'next-power-close-ghost': 0.0, 'too-many-next-ghost': 0.0, 'next-next-eat': 0.0, 'trap-while-ghost': 0.0, 'blank': 0.0, 'recent-visit': 0.0}
+        self.weights = {'bias': 0.0, 'next-ghost': 0.0, 'next-eat': 0.0, 'closest-item': 0.0, 'next-power': 0.0, 'next-power-close-ghost': 0.0, 'too-many-next-ghost': 0.0, 'next-next-eat': 0.0, 'trap-while-ghost': 0.0, 'blank': 0.0, 'recent-visit': 0.0, 'check-mate': 0.0}
 
         self.recent_visit = [(0, 0), (0, 0), (0, 0), (0, 0), (0, 0), (0, 0), (0, 0), (0, 0), (0, 0), (0, 0)]
 
@@ -148,18 +148,27 @@ class User:
 
 
 
-    def calculate_feature(self, state, next_y, next_x, feature, type):
+    def calculate_feature(self, state, next_y, next_x, feature, type, ghost_threat):
         if state[next_y][next_x] == type:
             feature += 1.0
         if next_y > 0 and state[next_y - 1][next_x] == type:
+            self.calculate_ghost_threat(self, state, next_y-1, next_x, ghost_threat)
             feature += 1.0
         if next_x > 0 and state[next_y][next_x - 1] == type:
+            self.calculate_ghost_threat(self, state, next_y, next_x-1, ghost_threat)
             feature += 1.0
         if next_x < len(state[0]) - 1 and state[next_y][next_x + 1] == type:
+            self.calculate_ghost_threat(self, state, next_y, next_x+1, ghost_threat)
             feature += 1.0
         if next_y < len(state) - 1 and state[next_y + 1][next_x] == type:
+            self.calculate_ghost_threat(self, state, next_y+1, next_x, ghost_threat)
             feature += 1.0
-        return feature
+        return feature, ghost_threat
+
+    def calculate_ghost_threat(self, state, next_y, next_x, ghost_threat):
+        if (next_y>0 and state[next_y-1][next_x] == GHOST) or (next_x>0 and state[next_y][next_x-1] == GHOST) or (next_x>len(state[0])-1 and state[next_y][next_x+1] == GHOST) or (next_y>len(state)-1 and state[next_y+1][next_x] == GHOST):
+            ghost_threat += 1
+
 
     def get_features(self, state, action):
         y, x = self.y, self.x
@@ -191,7 +200,22 @@ class User:
         if state[next_y + 1][next_x] != WALL and state[next_y - 1][next_x] != GHOST:
             count += 1
 
-        features['next-ghost'] = self.calculate_feature(state, next_y, next_x, features['next-ghost'], GHOST)
+        ghost_threat = 0
+        features['next-ghost'], ghost_threat = self.calculate_feature(state, next_y, next_x, features['next-ghost'], GHOST, ghost_threat)
+
+        surrounding_wall = 0
+        if next_y > 0 and state[next_y - 1][next_x] == WALL:
+            surrounding_wall += 1
+        if next_x > 0 and state[next_y][next_x - 1] == WALL:
+            surrounding_wall += 1
+        if next_x < len(state[0]) - 1 and state[next_y][next_x + 1] == WALL:
+            surrounding_wall += 1
+        if next_y < len(state) - 1 and state[next_y + 1][next_x] == WALL:
+            surrounding_wall += 1
+        features['checkmate'] = 0
+        if (surrounding_wall+ghost_threat) == 4:
+            features['checkmate'] = 1
+
         features['too-many-next-ghost'] = 0.0
         if features['next-ghost'] > 1:
             features['too-many-next-ghost'] += 1.0
