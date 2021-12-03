@@ -11,9 +11,9 @@ class User:
         self.discount = 0.8
         self.lr = 0.003
 
-        self.weights = {'bias': 0.0, 'next-ghost': 0.0, 'next-eat': 0.0, 'closest-item': 0.0, 'next-power': 0.0, 'next-power-close-ghost': 0.0, 'too-many-next-ghost': 0.0, 'next-next-eat': 0.0, 'trap-while-ghost': 0.0, 'blank': 0.0, 'visited': 0.0}
+        self.weights = {'bias': 0.0, 'next-ghost': 0.0, 'next-eat': 0.0, 'closest-item': 0.0, 'next-power': 0.0, 'next-power-close-ghost': 0.0, 'too-many-next-ghost': 0.0, 'next-next-eat': 0.0, 'trap-while-ghost': 0.0, 'blank': 0.0, 'recent-visit': 0.0}
 
-        self.visited = [[False]*21 for i in range(21)]
+        self.recent_visit = [(0, 0), (0, 0), (0, 0), (0, 0), (0, 0)]
 
     def next_pos(self, state, test=False):
         if self.move == 'v1':
@@ -218,6 +218,11 @@ class User:
         #self.calculate_feature(state, next_y, next_x, features['next-power'], POWER)
         features['closest-item'] = self.get_closest_item(state, next_y, next_x)
 
+        features['recent-visit'] = 0.0
+        for r in self.recent_visit:
+            if r == (next_y, next_x):
+                features['recent-visit'] += 1.0
+
         #features['visited'] = 0.0
         #if self.visited[next_y][next_x] == True:
         #    features['visited'] += 1.0
@@ -280,6 +285,7 @@ class User:
             next_pos = (self.y, self.x + 1)
         else:
             next_pos = (self.y + 1, self.x)
-        #self.visited[next_pos[0]][next_pos[1]] = True
+        self.recent_visit.pop()
+        self.recent_visit.append(next_pos)
         #print(self.visited)
         return next_pos
