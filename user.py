@@ -13,7 +13,7 @@ class User:
 
         self.weights = {'bias': 0.0, 'next-ghost': 0.0, 'next-eat': 0.0, 'closest-item': 0.0, 'next-power': 0.0, 'next-power-close-ghost': 0.0, 'too-many-next-ghost': 0.0, 'next-next-eat': 0.0, 'trap-while-ghost': 0.0, 'blank': 0.0, 'recent-visit': 0.0}
 
-        self.recent_visit = [(0, 0), (0, 0), (0, 0), (0, 0), (0, 0)]
+        self.recent_visit = [(0, 0), (0, 0), (0, 0), (0, 0), (0, 0), (0, 0), (0, 0), (0, 0), (0, 0), (0, 0)]
 
     def next_pos(self, state, test=False):
         if self.move == 'v1':
